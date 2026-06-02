@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Impact Analytics Dashboard</title>
+    <title>Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -34,19 +34,21 @@
         
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-800 pb-4 gap-4">
             <div>
-                <h1 class="text-2xl font-bold tracking-tight text-white">IMU Impact Analytics</h1>
+                <h1 class="text-2xl font-bold tracking-tight text-white">Dashboard</h1>
                 <p class="text-sm text-slate-400 flex flex-wrap items-center gap-x-2">
-                    Real-time device telemetry and event categorization
-                    <a href="#" onclick="toggleModal(true); return false;" class="text-sky-400 hover:text-sky-300 transition-colors underline decoration-sky-400/30 hover:decoration-sky-300 font-medium">Learn more</a>
+                    Visualizing kinetic data profiles, force magnitudes, and chronological event streams
+                    <button type="button" onclick="window.toggleModal(true)" class="text-sky-400 hover:text-sky-300 transition-colors underline decoration-sky-400/30 hover:decoration-sky-300 font-medium cursor-pointer focus:outline-none">
+                        Learn more
+                    </button>
                 </p>
             </div>
             
             <div class="flex flex-wrap items-center gap-4 w-full md:w-auto justify-between md:justify-end">
                 <div class="bg-slate-950 p-1 rounded-xl border border-slate-800 flex gap-1">
-                    <button id="btn-chart" onclick="switchMode('chart')" class="px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 bg-slate-800 text-white shadow-md">
+                    <button id="btn-chart" onclick="window.switchMode('chart')" class="px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 bg-slate-800 text-white shadow-md">
                         Chart View
                     </button>
-                    <button id="btn-log" onclick="switchMode('log')" class="px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 text-slate-400 hover:text-white">
+                    <button id="btn-log" onclick="window.switchMode('log')" class="px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 text-slate-400 hover:text-white">
                         Log View
                     </button>
                 </div>
@@ -75,7 +77,7 @@
                                     <th scope="col" class="py-3 px-4">Event #</th>
                                     <th scope="col" class="py-3 px-4">Timestamp</th>
                                     <th scope="col" class="py-3 px-4">Impact Profile</th>
-                                    <th scope="col" class="py-3 px-4 text-right">Intensity Scale</th>
+                                    <th scope="col" class="py-3 px-4 text-right">Intensity</th>
                                 </tr>
                             </thead>
                             <tbody id="log-table-body" class="divide-y divide-slate-800/40 text-sm font-medium">
@@ -89,7 +91,7 @@
             <div class="bg-slate-800 border border-slate-800/80 p-6 rounded-2xl shadow-xl flex flex-col justify-between h-full min-h-[300px]">
                 <div>
                     <h2 class="text-lg font-semibold text-white mb-2">Event Inspector</h2>
-                    <p class="text-xs text-slate-400 mb-6">Select or click directly on an entry pattern row to decode its micro-sensor parameters.</p>
+                    <p class="text-xs text-slate-400 mb-6">Click on a bubble/log entry to view the impact event up close.</p>
                     
                     <div id="inspector-default" class="text-center py-12 text-slate-500 text-sm italic border-2 border-dashed border-slate-700/60 rounded-xl bg-slate-900/20">
                         No metric selected
@@ -116,7 +118,7 @@
                 </div>
                 
                 <div class="text-[11px] text-slate-500 border-t border-slate-700/40 pt-4 mt-6 flex justify-between items-center">
-                    <span>Linear scaling map applied: ($r \propto G$)</span>
+                    <span>Big Birb Studio</span>
                     <span class="font-mono text-slate-600">v1.1.0</span>
                 </div>
             </div>
@@ -124,11 +126,11 @@
         </div>
     </div>
 
-    <div id="info-modal" onclick="toggleModal(false)" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50 transition-all duration-300">
+    <div id="info-modal" onclick="window.toggleModal(false)" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50 transition-all duration-300">
         <div onclick="event.stopPropagation()" class="bg-slate-800 border border-slate-700 max-w-md w-full p-6 rounded-2xl shadow-2xl transform scale-100 transition-transform">
             <div class="flex justify-between items-start mb-4">
                 <h3 class="text-xl font-bold text-white tracking-tight">About Telemetry Analytics</h3>
-                <button onclick="toggleModal(false)" class="text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-slate-700/50">
+                <button type="button" onclick="window.toggleModal(false)" class="text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-slate-700/50 cursor-pointer">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
@@ -137,7 +139,7 @@
                 <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
             </div>
             <div class="mt-6 flex justify-end">
-                <button onclick="toggleModal(false)" class="bg-slate-700 hover:bg-slate-600 active:bg-slate-500 text-white font-semibold text-xs py-2 px-4 rounded-xl transition-all shadow-md">
+                <button type="button" onclick="window.toggleModal(false)" class="bg-slate-700 hover:bg-slate-600 active:bg-slate-500 text-white font-semibold text-xs py-2 px-4 rounded-xl transition-all shadow-md cursor-pointer">
                     Close
                 </button>
             </div>
@@ -145,152 +147,147 @@
     </div>
 
     <script>
-        // fake data for testing
-        const final_impact_log = [
-            ["14:22:05", 2.93, "roll"], 
-            ["14:22:12", 3.16, "toss"], 
-            ["14:22:31", 8.36, "drop"]
-        ];
+        document.addEventListener('DOMContentLoaded', () => {
+            const final_impact_log = [
+                ["14:22:05", 2.93, "roll"], 
+                ["14:22:12", 3.16, "toss"], 
+                ["14:22:31", 8.36, "drop"]
+            ];
 
-        const colors = {
-            roll: { fill: 'rgba(16, 185, 129, 0.55)', border: 'rgb(16, 185, 129)', text: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' }, 
-            toss: { fill: 'rgba(245, 158, 11, 0.55)', border: 'rgb(245, 158, 11)', text: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20' },  
-            drop: { fill: 'rgba(244, 63, 94, 0.55)', border: 'rgb(244, 63, 94)', text: 'text-rose-400', bg: 'bg-rose-500/10 border-rose-500/20' }     
-        };
+            const colors = {
+                roll: { fill: 'rgba(16, 185, 129, 0.55)', border: 'rgb(16, 185, 129)', text: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' }, 
+                toss: { fill: 'rgba(245, 158, 11, 0.55)', border: 'rgb(245, 158, 11)', text: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20' },  
+                drop: { fill: 'rgba(244, 63, 94, 0.55)', border: 'rgb(244, 63, 94)', text: 'text-rose-400', bg: 'bg-rose-500/10 border-rose-500/20' }     
+            };
 
-        // Format raw debugging data into Chart.js coordinate map layout
-        const chartDataPoints = final_impact_log.map(item => ({
-            x: item[0], // Time
-            y: item[1], // Intensity 
-            r: (item[1] * 3.5) + 6, // Radius scale
-            type: item[2] // Type
-        }));
+            const chartDataPoints = final_impact_log.map(item => ({
+                x: item[0], 
+                y: item[1], 
+                r: (item[1] * 3.5) + 6, 
+                type: item[2] 
+            }));
 
-        // -------- POP-UP MODAL TOGGLE ENGINE ---------
-        function toggleModal(show) {
-            const modal = document.getElementById('info-modal');
-            if (show) {
-                modal.classList.remove('hidden');
-            } else {
-                modal.classList.add('hidden');
-            }
-        }
+            window.toggleModal = function(show) {
+                const modal = document.getElementById('info-modal');
+                if (show) {
+                    modal.classList.remove('hidden');
+                } else {
+                    modal.classList.add('hidden');
+                }
+            };
 
-        // -------- TOGGLE UI MODES ---------
-        function switchMode(mode) {
-            const chartBtn = document.getElementById('btn-chart');
-            const logBtn = document.getElementById('btn-log');
-            const chartView = document.getElementById('view-chart-container');
-            const logView = document.getElementById('view-log-container');
+            window.switchMode = function(mode) {
+                const chartBtn = document.getElementById('btn-chart');
+                const logBtn = document.getElementById('btn-log');
+                const chartView = document.getElementById('view-chart-container');
+                const logView = document.getElementById('view-log-container');
 
-            if (mode === 'chart') {
-                chartBtn.className = "px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 bg-slate-800 text-white shadow-md";
-                logBtn.className = "px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 text-slate-400 hover:text-white";
-                chartView.classList.remove('hidden');
-                logView.classList.add('hidden');
-            } else {
-                logBtn.className = "px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 bg-slate-800 text-white shadow-md";
-                chartBtn.className = "px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 text-slate-400 hover:text-white";
-                chartView.classList.add('hidden');
-                logView.classList.remove('hidden');
-            }
-        }
+                if (mode === 'chart') {
+                    chartBtn.className = "px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 bg-slate-800 text-white shadow-md";
+                    logBtn.className = "px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 text-slate-400 hover:text-white";
+                    chartView.classList.remove('hidden');
+                    logView.classList.add('hidden');
+                } else {
+                    logBtn.className = "px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 bg-slate-800 text-white shadow-md";
+                    chartBtn.className = "px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 text-slate-400 hover:text-white";
+                    chartView.classList.add('hidden');
+                    logView.classList.remove('hidden');
+                }
+            };
 
-        // -------- CONSOLE LOG TABLE --------
-        const tableBody = document.getElementById('log-table-body');
-        final_impact_log.forEach((event, index) => {
-            const time = event[0];
-            const intensity = event[1];
-            const type = event[2];
-            const profile = colors[type];
+            const tableBody = document.getElementById('log-table-body');
+            final_impact_log.forEach((event, index) => {
+                const time = event[0];
+                const intensity = event[1];
+                const type = event[2];
+                const profile = colors[type];
 
-            const row = document.createElement('tr');
-            row.className = "hover:bg-slate-800/30 cursor-pointer border-b border-slate-800/40 transition-colors";
-            
-            // Map table clicks directly to the close inspection panel
-            row.onclick = () => updateInspectorUI({ x: time, y: intensity, type: type });
+                const row = document.createElement('tr');
+                row.className = "hover:bg-slate-800/30 cursor-pointer border-b border-slate-800/40 transition-colors";
+                row.onclick = () => updateInspectorUI({ x: time, y: intensity, type: type });
 
-            row.innerHTML = `
-                <td class="py-3 px-4 text-slate-500 font-mono text-xs">#0${index + 1}</td>
-                <td class="py-3 px-4 font-mono text-slate-300">${time}</td>
-                <td class="py-3 px-4">
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-bold border ${profile.bg} ${profile.text}">
-                        ${type.toUpperCase()}
-                    </span>
-                </td>
-                <td class="py-3 px-4 text-right font-bold text-white">${intensity.toFixed(2)} <span class="text-xs font-normal text-slate-500">Gs</span></td>
-            `;
-            tableBody.appendChild(row);
-        });
+                row.innerHTML = `
+                    <td class="py-3 px-4 text-slate-500 font-mono text-xs">#0${index + 1}</td>
+                    <td class="py-3 px-4 font-mono text-slate-300">${time}</td>
+                    <td class="py-3 px-4">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-bold border ${profile.bg} ${profile.text}">
+                            ${type.toUpperCase()}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-right font-bold text-white">${intensity.toFixed(2)} <span class="text-xs font-normal text-slate-500">Gs</span></td>
+                `;
+                tableBody.appendChild(row);
+            });
 
-        // -------- CHART ENGINE CONFIGURATION --------
-        const ctx = document.getElementById('impactChart').getContext('2d');
-        const impactChart = new Chart(ctx, {
-            type: 'bubble',
-            data: {
-                datasets: [{
-                    data: chartDataPoints,
-                    backgroundColor: chartDataPoints.map(p => colors[p.type].fill),
-                    borderColor: chartDataPoints.map(p => colors[p.type].border),
-                    borderWidth: 2,
-                    hoverBorderWidth: 3,
-                    hoverRadius: 2,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }, 
-                    tooltip: {
-                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                        borderColor: 'rgba(51, 65, 85, 0.5)',
-                        borderWidth: 1,
-                        padding: 10,
-                        callbacks: {
-                            label: (context) => ` [${context.raw.type.toUpperCase()}] Intensity: ${context.raw.y} Gs`
+            const ctx = document.getElementById('impactChart').getContext('2d');
+            const impactChart = new Chart(ctx, {
+                type: 'bubble',
+                data: {
+                    datasets: [{
+                        data: chartDataPoints,
+                        backgroundColor: chartDataPoints.map(p => colors[p.type].fill),
+                        borderColor: chartDataPoints.map(p => colors[p.type].border),
+                        borderWidth: 2,
+                        hoverBorderWidth: 3,
+                        hoverRadius: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }, 
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            borderColor: 'rgba(51, 65, 85, 0.5)',
+                            borderWidth: 1,
+                            padding: 10,
+                            callbacks: {
+                                label: (context) => ` [${context.raw.type.toUpperCase()}] Intensity: ${context.raw.y} Gs`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'category', 
+                            grid: { color: 'rgba(51, 65, 85, 0.15)', drawTicks: false },
+                            // CHANGED X-AXIS LABELLING
+                            title: { display: true, text: 'Time', color: '#64748b', font: { weight: 'bold' } },
+                            ticks: { color: '#94a3b8', padding: 8 }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(51, 65, 85, 0.15)', drawTicks: false },
+                            // CHANGED Y-AXIS LABELLING
+                            title: { display: true, text: 'Intensity', color: '#64748b', font: { weight: 'bold' } },
+                            ticks: { color: '#94a3b8', padding: 8 }
+                        }
+                    },
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const index = elements[0].index;
+                            updateInspectorUI(impactChart.data.datasets[0].data[index]);
                         }
                     }
-                },
-                scales: {
-                    x: {
-                        type: 'category', 
-                        grid: { color: 'rgba(51, 65, 85, 0.15)', drawTicks: false },
-                        title: { display: true, text: 'System Timeline Log', color: '#64748b', font: { weight: 'bold' } },
-                        ticks: { color: '#94a3b8', padding: 8 }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        grid: { color: 'rgba(51, 65, 85, 0.15)', drawTicks: false },
-                        title: { display: true, text: 'Intensity Magnitude (G-Force Accel)', color: '#64748b', font: { weight: 'bold' } },
-                        ticks: { color: '#94a3b8', padding: 8 }
-                    }
-                },
-                onClick: (event, elements) => {
-                    if (elements.length > 0) {
-                        const index = elements[0].index;
-                        updateInspectorUI(impactChart.data.datasets[0].data[index]);
-                    }
                 }
+            });
+
+            function updateInspectorUI(node) {
+                document.getElementById('inspector-default').classList.add('hidden');
+                document.getElementById('inspector-data').classList.remove('hidden');
+
+                const typeLabel = document.getElementById('info-type');
+                typeLabel.innerText = node.type.toUpperCase();
+                
+                typeLabel.className = "text-lg font-black tracking-wide";
+                if(node.type === 'roll') typeLabel.classList.add('text-emerald-400');
+                if(node.type === 'toss') typeLabel.classList.add('text-amber-400');
+                if(node.type === 'drop') typeLabel.classList.add('text-rose-400');
+
+                document.getElementById('info-time').innerText = node.x;
+                document.getElementById('info-intensity').innerHTML = `${node.y} <span class="text-sm font-normal text-slate-400 ml-1">Gs</span>`;
             }
         });
-
-        // -------- SIDEBAR CLOSE INSPECTION PANEL --------
-        function updateInspectorUI(node) {
-            document.getElementById('inspector-default').classList.add('hidden');
-            document.getElementById('inspector-data').classList.remove('hidden');
-
-            const typeLabel = document.getElementById('info-type');
-            typeLabel.innerText = node.type.toUpperCase();
-            
-            typeLabel.className = "text-lg font-black tracking-wide";
-            if(node.type === 'roll') typeLabel.classList.add('text-emerald-400');
-            if(node.type === 'toss') typeLabel.classList.add('text-amber-400');
-            if(node.type === 'drop') typeLabel.classList.add('text-rose-400');
-
-            document.getElementById('info-time').innerText = node.x;
-            document.getElementById('info-intensity').innerHTML = `${node.y} <span class="text-sm font-normal text-slate-400 ml-1">Gs</span>`;
-        }
     </script>
 </body>
 </html>
