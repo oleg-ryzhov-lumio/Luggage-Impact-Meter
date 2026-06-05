@@ -36,7 +36,7 @@
             <div>
                 <h1 class="text-2xl font-bold tracking-tight text-white">Dashboard</h1>
                 <p class="text-sm text-slate-400 flex flex-wrap items-center gap-x-2">
-                    Visualizing kinetic data profiles, force magnitudes, and chronological event streams
+                    Log of significant impact events on the luggage
                     <button type="button" onclick="window.toggleModal(true)" class="text-sky-400 hover:text-sky-300 transition-colors underline decoration-sky-400/30 hover:decoration-sky-300 font-medium cursor-pointer focus:outline-none">
                         Learn more
                     </button>
@@ -127,18 +127,28 @@
     </div>
 
     <div id="info-modal" onclick="window.toggleModal(false)" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50 transition-all duration-300">
-        <div onclick="event.stopPropagation()" class="bg-slate-800 border border-slate-700 max-w-md w-full p-6 rounded-2xl shadow-2xl transform scale-100 transition-transform">
-            <div class="flex justify-between items-start mb-4">
-                <h3 class="text-xl font-bold text-white tracking-tight">About Telemetry Analytics</h3>
+        <div onclick="event.stopPropagation()" class="bg-slate-800 border border-slate-700 max-w-lg w-full p-6 rounded-2xl shadow-2xl transform scale-100 transition-transform">
+            <div class="flex justify-between items-start mb-4 border-b border-slate-700/50 pb-2">
+                <h3 class="text-xl font-bold text-white tracking-tight">About Luggage Impact Meter</h3>
                 <button type="button" onclick="window.toggleModal(false)" class="text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-slate-700/50 cursor-pointer">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
-            <div class="text-sm text-slate-300 space-y-3 leading-relaxed">
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <div class="text-sm text-slate-300 space-y-4 max-h-[70vh] overflow-y-auto pr-1">
+                <div>
+                    <h4 class="text-sm font-semibold text-slate-200 uppercase tracking-wider mb-1">What is it?</h4>
+                    <p class="leading-relaxed">Luggage Impact Meter is a tool that uses Codey Rocky to monitor impacts that occur to your package during flight or shipment and sends the collected data here. The data is processed and filtered based on impact intensity and the significant impacts are displayed on the dashboard.</p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-slate-200 uppercase tracking-wider mb-1">Why?</h4>
+                    <p class="leading-relaxed">Has the following situation ever happened to you? So you fly somewhere with a budget airline, and find your luggage damaged, but the airline denies that they were the reason for this. Now, you could just take a picture of your bags before the flight, but Luggage Impact Meter provides much more concrete evidence, as it can record the exact time impact happened, as well as their type and intensity in Gs.</p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-slate-200 uppercase tracking-wider mb-1">How to use it?</h4>
+                    <p class="leading-relaxed">The Luggage Impact Meter Dashboard has 2 mores for viewing data: Bubble chart and log. To switch between modes, click on the switch on the top left of the screen. In chart mode, time is represented through the X-axis and impact intensity is shown by bubble size and Y level. Clicking on a bubble shows the event inspector, where you can view the data more closely. You can also export the data to Sheets and Docs for log mode by clicking the Export button at the bottom of the chart/log.</p>
+                </div>
             </div>
-            <div class="mt-6 flex justify-end">
+            <div class="mt-6 flex justify-end border-t border-slate-700/30 pt-3">
                 <button type="button" onclick="window.toggleModal(false)" class="bg-slate-700 hover:bg-slate-600 active:bg-slate-500 text-white font-semibold text-xs py-2 px-4 rounded-xl transition-all shadow-md cursor-pointer">
                     Close
                 </button>
@@ -251,15 +261,13 @@
                         x: {
                             type: 'category', 
                             grid: { color: 'rgba(51, 65, 85, 0.15)', drawTicks: false },
-                            // CHANGED X-AXIS LABELLING
                             title: { display: true, text: 'Time', color: '#64748b', font: { weight: 'bold' } },
                             ticks: { color: '#94a3b8', padding: 8 }
                         },
                         y: {
                             beginAtZero: true,
                             grid: { color: 'rgba(51, 65, 85, 0.15)', drawTicks: false },
-                            // CHANGED Y-AXIS LABELLING
-                            title: { display: true, text: 'Intensity', color: '#64748b', font: { weight: 'bold' } },
+                            title: { display: true, text: 'Intensity (Gs)', color: '#64748b', font: { weight: 'bold' } },
                             ticks: { color: '#94a3b8', padding: 8 }
                         }
                     },
@@ -272,7 +280,7 @@
                 }
             });
 
-            function updateInspectorUI(node) {
+            fn function updateInspectorUI(node) {
                 document.getElementById('inspector-default').classList.add('hidden');
                 document.getElementById('inspector-data').classList.remove('hidden');
 
