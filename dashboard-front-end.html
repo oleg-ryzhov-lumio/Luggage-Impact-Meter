@@ -207,9 +207,26 @@
                     const response = await fetch(SHEET_CSV_URL);
                     const dataText = await response.text();
                     const lines = dataText.split('\n').map(line => line.split(','));
-                    const rawEvents = lines.slice(1).filter(row => row.length >= 3 && row[0].trim() !== "");
                     
-                    const final_impact_log = rawEvents.map(row => [
+                    const cleanEvents = lines.filter(row => {
+                        if (row.length < 3) return false;
+                        const col1 = row[0].replace(/"/g, '').trim();
+                        const col2 = row[1].replace(/"/g, '').trim();
+                        const col3 = row[2].replace(/"/g, '').trim();
+                        
+                        if (col1.includes('<') || col1.includes('{') || col1.includes('*')) return false;
+                        if (col1.toLowerCase() === "timestamp") return false;
+                        
+                        const intensityNum = parseFloat(col2);
+                        if (isNaN(intensityNum)) return false;
+                        
+                        const typeLower = col3.toLowerCase();
+                        if (typeLower !== 'roll' && typeLower !== 'toss' && typeLower !== 'drop') return false;
+                        
+                        return true;
+                    });
+                    
+                    const final_impact_log = cleanEvents.map(row => [
                         row[0].replace(/"/g, '').trim(),
                         parseFloat(row[1]),
                         row[2].replace(/"/g, '').trim().toLowerCase()
