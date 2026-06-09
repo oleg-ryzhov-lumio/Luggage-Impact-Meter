@@ -1,13 +1,16 @@
 import cyberpi
 import time
 
-# Connect directly to the local Wi-Fi network
-cyberpi.wifi.connect("Lumio Students", "As this is a public repository, I will not share the password here, but it will be in the actual code")
+# 1. Connect Codey directly to your local Wi-Fi network
+cyberpi.wifi.connect("Your_WiFi_Name", "Your_WiFi_Password")
 
 while not cyberpi.wifi.is_connected():
     time.sleep(0.5)
 
 cyberpi.inform("Connected & Armed")
+
+# Your unique Google Apps Script Web App URL (We get this in the steps below)
+google_script_url = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE"
 
 while True:
     x = cyberpi.get_acc('x')
@@ -16,6 +19,7 @@ while True:
     
     total_g = (x**2 + y**2 + z**2)**0.5
     
+    # Threshold filtering
     if total_g > 2.5:
         event_type = "roll"
         if total_g > 5.0:
@@ -25,7 +29,8 @@ while True:
             
         current_time = f"{time.localtime()[3]:02d}:{time.localtime()[4]:02d}:{time.localtime()[5]:02d}"
         
-        # Trigger a direct web hook to send data to the cloud
-        cyberpi.network.request_get(f"https://your-cloud-receiver.com/log?time={current_time}&g={total_g:.2f}&type={event_type}")
+        # 2. Fire the data directly to your Google Sheet over the internet
+        request_url = f"{google_script_url}?time={current_time}&g={total_g:.2f}&type={event_type}"
+        cyberpi.network.request_get(request_url)
         
         time.sleep(0.8)
