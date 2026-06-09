@@ -65,7 +65,11 @@
             
             <div class="lg:col-span-2 bg-slate-800/40 border border-slate-800 p-5 rounded-2xl shadow-xl backdrop-blur-sm flex flex-col min-h-[400px]">
                 
-                <div id="view-chart-container" class="relative w-full flex-grow h-full min-h-0">
+                <div id="loading-state" class="flex-grow flex items-center justify-center text-slate-400 text-sm">
+                    Connecting to Google Sheets database...
+                </div>
+
+                <div id="view-chart-container" class="hidden relative w-full flex-grow h-full min-h-0">
                     <canvas id="impactChart"></canvas>
                 </div>
 
@@ -157,25 +161,17 @@
     </div>
 
     <script>
+        const SHEET_CSV_URL = "YOUR_GOOGLE_SHEET_CSV_URL_HERE";
+
         document.addEventListener('DOMContentLoaded', () => {
-            const final_impact_log = [
-                ["14:22:05", 2.93, "roll"], 
-                ["14:22:12", 3.16, "toss"], 
-                ["14:22:31", 8.36, "drop"]
-            ];
+            let currentMode = 'chart';
+            let impactChart = null;
 
             const colors = {
                 roll: { fill: 'rgba(16, 185, 129, 0.55)', border: 'rgb(16, 185, 129)', text: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20' }, 
                 toss: { fill: 'rgba(245, 158, 11, 0.55)', border: 'rgb(245, 158, 11)', text: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20' },  
                 drop: { fill: 'rgba(244, 63, 94, 0.55)', border: 'rgb(244, 63, 94)', text: 'text-rose-400', bg: 'bg-rose-500/10 border-rose-500/20' }     
             };
-
-            const chartDataPoints = final_impact_log.map(item => ({
-                x: item[0], 
-                y: item[1], 
-                r: (item[1] * 3.5) + 6, 
-                type: item[2] 
-            }));
 
             window.toggleModal = function(show) {
                 const modal = document.getElementById('info-modal');
@@ -187,6 +183,7 @@
             };
 
             window.switchMode = function(mode) {
+                currentMode = mode;
                 const chartBtn = document.getElementById('btn-chart');
                 const logBtn = document.getElementById('btn-log');
                 const chartView = document.getElementById('view-chart-container');
@@ -205,80 +202,119 @@
                 }
             };
 
-            const tableBody = document.getElementById('log-table-body');
-            final_impact_log.forEach((event, index) => {
-                const time = event[0];
-                const intensity = event[1];
-                const type = event[2];
-                const profile = colors[type];
+            async function loadDataFromSheets() {
+                try {
+                    const response = await fetch(SHEET_CSV_URL);
+                    const dataText = await response.text();
+                    const lines = dataText.split('\n').map(line => line.split(','));
+                    const rawEvents = lines.slice(1).filter(row => row.length >= 3 && row[0].trim() !== "");
+                    
+                    const final_impact_log = rawEvents.map(row => [
+                        row[0].replace(/"/g, '').trim(),
+                        parseFloat(row[1]),
+                        row[2].replace(/"/g, '').trim().toLowerCase()
+                    ]);
 
-                const row = document.createElement('tr');
-                row.className = "hover:bg-slate-800/30 cursor-pointer border-b border-slate-800/40 transition-colors";
-                row.onclick = () => updateInspectorUI({ x: time, y: intensity, type: type });
+                    document.getElementById('loading-state').classList.add('hidden');
+                    window.switchMode(currentMode);
 
-                row.innerHTML = `
-                    <td class="py-3 px-4 text-slate-500 font-mono text-xs">#0${index + 1}</td>
-                    <td class="py-3 px-4 font-mono text-slate-300">${time}</td>
-                    <td class="py-3 px-4">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-bold border ${profile.bg} ${profile.text}">
-                            ${type.toUpperCase()}
-                        </span>
-                    </td>
-                    <td class="py-3 px-4 text-right font-bold text-white">${intensity.toFixed(2)} <span class="text-xs font-normal text-slate-500">Gs</span></td>
-                `;
-                tableBody.appendChild(row);
-            });
+                    buildTable(final_impact_log);
+                    buildChart(final_impact_log);
+                } catch (error) {
+                    console.error("Failed to sync database:", error);
+                    document.getElementById('loading-state').innerText = "Failed to pull live luggage tracking log.";
+                }
+            }
 
-            const ctx = document.getElementById('impactChart').getContext('2d');
-            const impactChart = new Chart(ctx, {
-                type: 'bubble',
-                data: {
-                    datasets: [{
-                        data: chartDataPoints,
-                        backgroundColor: chartDataPoints.map(p => colors[p.type].fill),
-                        borderColor: chartDataPoints.map(p => colors[p.type].border),
-                        borderWidth: 2,
-                        hoverBorderWidth: 3,
-                        hoverRadius: 2,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }, 
-                        tooltip: {
-                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                            borderColor: 'rgba(51, 65, 85, 0.5)',
-                            borderWidth: 1,
-                            padding: 10,
-                            callbacks: {
-                                label: (context) => ` [${context.raw.type.toUpperCase()}] Intensity: ${context.raw.y} Gs`
+            function buildTable(dataLog) {
+                const tableBody = document.getElementById('log-table-body');
+                tableBody.innerHTML = "";
+                
+                dataLog.forEach((event, index) => {
+                    const time = event[0];
+                    const intensity = event[1];
+                    const type = event[2];
+                    const profile = colors[type] || colors['roll'];
+
+                    const row = document.createElement('tr');
+                    row.className = "hover:bg-slate-800/30 cursor-pointer border-b border-slate-800/40 transition-colors";
+                    row.onclick = () => updateInspectorUI({ x: time, y: intensity, type: type });
+
+                    row.innerHTML = `
+                        <td class="py-3 px-4 text-slate-500 font-mono text-xs">#0${index + 1}</td>
+                        <td class="py-3 px-4 font-mono text-slate-300">${time}</td>
+                        <td class="py-3 px-4">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-bold border ${profile.bg} ${profile.text}">
+                                ${type.toUpperCase()}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-right font-bold text-white">${intensity.toFixed(2)} <span class="text-xs font-normal text-slate-500">Gs</span></td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
+
+            function buildChart(dataLog) {
+                const chartDataPoints = dataLog.map(item => ({
+                    x: item[0], 
+                    y: item[1], 
+                    r: (item[1] * 3.5) + 6, 
+                    type: item[2] 
+                }));
+
+                const ctx = document.getElementById('impactChart').getContext('2d');
+                if(impactChart) impactChart.destroy();
+
+                impactChart = new Chart(ctx, {
+                    type: 'bubble',
+                    data: {
+                        datasets: [{
+                            data: chartDataPoints,
+                            backgroundColor: chartDataPoints.map(p => (colors[p.type] || colors['roll']).fill),
+                            borderColor: chartDataPoints.map(p => (colors[p.type] || colors['roll']).border),
+                            borderWidth: 2,
+                            hoverBorderWidth: 3,
+                            hoverRadius: 2,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }, 
+                            tooltip: {
+                                backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                                borderColor: 'rgba(51, 65, 85, 0.5)',
+                                borderWidth: 1,
+                                padding: 10,
+                                callbacks: {
+                                    label: (context) => ` [${context.raw.type.toUpperCase()}] Intensity: ${context.raw.y} Gs`
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                type: 'category', 
+                                grid: { color: 'rgba(51, 65, 85, 0.15)', drawTicks: false },
+                                title: { display: true, text: 'Time', color: '#64748b', font: { weight: 'bold' } },
+                                ticks: { color: '#94a3b8', padding: 8 }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(51, 65, 85, 0.15)', drawTicks: false },
+                                title: { display: true, text: 'Intensity (Gs)', color: '#64748b', font: { weight: 'bold' } },
+                                ticks: { color: '#94a3b8', padding: 8 }
+                            }
+                        },
+                        onClick: (event, elements) => {
+                            if (elements.length > 0) {
+                                const index = elements[0].index;
+                                updateInspectorUI(impactChart.data.datasets[0].data[index]);
                             }
                         }
-                    },
-                    scales: {
-                        x: {
-                            type: 'category', 
-                            grid: { color: 'rgba(51, 65, 85, 0.15)', drawTicks: false },
-                            title: { display: true, text: 'Time', color: '#64748b', font: { weight: 'bold' } },
-                            ticks: { color: '#94a3b8', padding: 8 }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: 'rgba(51, 65, 85, 0.15)', drawTicks: false },
-                            title: { display: true, text: 'Intensity (Gs)', color: '#64748b', font: { weight: 'bold' } },
-                            ticks: { color: '#94a3b8', padding: 8 }
-                        }
-                    },
-                    onClick: (event, elements) => {
-                        if (elements.length > 0) {
-                            const index = elements[0].index;
-                            updateInspectorUI(impactChart.data.datasets[0].data[index]);
-                        }
                     }
-                }
-            });
+                });
+            }
 
             function updateInspectorUI(node) {
                 document.getElementById('inspector-default').classList.add('hidden');
@@ -295,6 +331,8 @@
                 document.getElementById('info-time').innerText = node.x;
                 document.getElementById('info-intensity').innerHTML = `${node.y} <span class="text-sm font-normal text-slate-400 ml-1">Gs</span>`;
             }
+
+            loadDataFromSheets();
         });
     </script>
 </body>
