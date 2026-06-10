@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Luggage Impact Meter Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -151,6 +151,10 @@
                     <h4 class="text-sm font-semibold text-slate-200 uppercase tracking-wider mb-1">How to use it?</h4>
                     <p class="leading-relaxed">The Luggage Impact Meter Dashboard has 2 modes for viewing data: Bubble chart and log. To switch between modes, click on the switch on the top left of the screen. In chart mode, time is represented through the X-axis and impact intensity is shown by bubble size and Y level. You can also export the data to Sheets and Docs for log mode by clicking the Export button at the bottom of the chart/log.</p>
                 </div>
+                <div class="border-t border-slate-700/50 pt-3">
+                    <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-1">Codey Rocky</h4>
+                    <p class="leading-relaxed text-slate-300">To use Luggage Impact Meter, connect the Codey Rocky microcontroller to mblock in upload mode. Press A to start recording and B to stop. Pressing C pauses the recording. Press it again to unpause.</p>
+                </div>
             </div>
             <div class="mt-6 flex justify-end border-t border-slate-700/30 pt-3">
                 <button type="button" onclick="window.toggleModal(false)" class="bg-slate-700 hover:bg-slate-600 active:bg-slate-500 text-white font-semibold text-xs py-2 px-4 rounded-xl transition-all shadow-md cursor-pointer">
@@ -161,7 +165,7 @@
     </div>
 
     <script>
-        const SHEET_CSV_URL = "YOUR_GOOGLE_SHEET_CSV_URL_HERE";
+        const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSV3-PLljIyqpnm8zYBSmeDbhhqB_0Nq9HvzPt-U8cgfBYdOq2etv6gDUFKnmsKRyVE9jxnW_MOXLnH/pub?gid=0&single=true&output=csv";
 
         document.addEventListener('DOMContentLoaded', () => {
             let currentMode = 'chart';
